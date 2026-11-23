@@ -117,4 +117,4 @@ unless podfile.include?("'Debug-dev'")
   File.write(podfile_path, podfile)
 end
 
-puts "Flavors do iOS: #{FLAVORS.keys.join(', ')}"
+puts "iOS flavors: #{FLAVORS.keys.join(', ')}"
