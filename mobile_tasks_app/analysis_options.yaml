@@ -1,0 +1,12 @@
+# The root comes last in the include: it declares the workspace_lints
+# plugin (chapter 40). Without it, this file would replace the root's for
+# the package's files, and the plugin would not run here.
+include:
+  - package:flutter_lints/flutter.yaml
+  - ../analysis_options.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**

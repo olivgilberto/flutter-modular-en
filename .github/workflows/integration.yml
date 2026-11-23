@@ -1,0 +1,100 @@
+# Chapter 40: chapter 39's integration tests on the Android emulator,
+# triggered by hand, from the Actions tab or with
+#   gh workflow run "Integration (Android)" --ref main
+# Until November 5, 2026 they also ran on every push to main. They left the
+# push because the third file, online_journey_test.dart, never manages to
+# load on the CI emulator ("Failed to start Dart Development Service") in
+# four runs in a row, while it passes on the Mac, on both devices: a test
+# that always fails because of the tooling teaches people to ignore the X.
+# The integration tests stay in verify_integration.sh, before every
+# release. They never ran on pull requests: they need an emulator and
+# minutes that the analysis and the unit tests do not.
+name: Integration (Android)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android emulator, against dev_backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      # Emulator acceleration on the Linux runner (android-emulator-runner's
+      # README).
+      - name: KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.5
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      # On the first run, the runner went down in the middle of the build,
+      # with the emulator already on: the Gradle build, the downloaded NDK,
+      # and the emulator at the same time exceed what the standard runner
+      # can take. Two changes: disk space freed first, and the app built
+      # before the emulator starts; flutter test, afterward, only reuses
+      # the build.
+      - name: Disk space (runner tools the project does not use)
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup \
+            /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+      # A private repository's standard machine has 8 GB of memory, and the
+      # Flutter template's gradle.properties reserves up to 8 GB for Gradle
+      # alone. With the emulator on, each test file's build went over the
+      # limit, and GitHub took the machine down (chapter 41). The lower limit
+      # fixed the crash; with no Gradle daemon and Kotlin compiling inside
+      # it, no JVM sits holding memory while the app runs on the emulator.
+      # The user file takes precedence over the project file, and only here.
+      - name: Gradle memory (the machine has 8 GB)
+        run: |
+          mkdir -p ~/.gradle
+          cat >> ~/.gradle/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError
+          org.gradle.daemon=false
+          kotlin.compiler.execution.strategy=in-process
+          EOF
+      - name: Build the test app, before the emulator
+        working-directory: mobile_tasks_app
+        run: >-
+          flutter build apk --debug --flavor dev
+          -t integration_test/online_journey_test.dart
+          --dart-define-from-file=config/dev_local.json
+      - name: dev_backend, with the control port (chapters 35 and 39)
+        run: |
+          dart run tools/dev_backend/bin/dev_backend.dart \
+            --port 8080 --control-port 8081 \
+            < /dev/null > "$RUNNER_TEMP/dev_backend.log" 2>&1 &
+          for i in $(seq 1 90); do
+            curl -sf http://127.0.0.1:8081/control/status && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Integration tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          ram-size: 2048M
+          script: bash tools/ci/integration_android.sh
+      - name: What dev_backend received
+        if: always()
+        run: cat "$RUNNER_TEMP/dev_backend.log"

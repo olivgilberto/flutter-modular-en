@@ -1,0 +1,12 @@
+# tasks_module's translations (chapter 37). The ARBs and the generated class
+# live on the driving side: text belongs to screens, and the domain has none.
+arb-dir: lib/adapters/driving/l10n
+template-arb-file: tasks_module_en.arb
+output-localization-file: tasks_module_localizations.dart
+output-class: TasksModuleLocalizations
+# TasksModuleLocalizations.of(context) returns the class, without the `!`:
+# the module's delegate is part of the host's wiring checklist.
+nullable-getter: false
+# Every key has its description, for translators.
+required-resource-attributes: true
+format: true

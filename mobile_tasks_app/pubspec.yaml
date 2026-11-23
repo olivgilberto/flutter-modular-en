@@ -1,0 +1,47 @@
+name: mobile_tasks_app
+description: The mobile_tasks host, the only package that builds an app and the only one that knows the adapters.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  core:
+  design_system:
+  auth_module:
+  tasks_module:
+  adapter_analytics_firebase:
+  adapter_connectivity_connectivity_plus:
+  adapter_db_sqlcipher:
+  adapter_http_http:
+  adapter_logging_crashlytics:
+  adapter_prefs_shared_preferences:
+  adapter_sync_workmanager:
+  firebase_core: ^5.0.0
+  get_it: ^9.3.0
+  go_router: ^18.1.0
+  intl: any
+  app_tracking_transparency: ^2.0.7
+  safe_device: ^1.4.1
+  bloc: ^9.2.1
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_secure_storage: ^11.2.0
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  path_provider: ^2.1.6
+  sqflite_sqlcipher: ^3.4.1
+
+flutter:
+  uses-material-design: true
+  # Chapter 37: gen-l10n generates MobileTasksLocalizations from
+  # l10n.yaml. intl comes in through pub add.
+  generate: true

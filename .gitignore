@@ -1,0 +1,12 @@
+.dart_tool/
+build/
+pubspec_overrides.yaml
+coverage/
+
+# Public copy of the book: the Firebase files belong to each reader
+# (flutterfire configure creates them, chapter 38).
+.DS_Store
+mobile_tasks_app/firebase.json
+mobile_tasks_app/lib/firebase_options_*.dart
+mobile_tasks_app/android/app/src/*/google-services.json
+mobile_tasks_app/ios/flavors/*/GoogleService-Info.plist

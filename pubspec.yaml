@@ -1,0 +1,38 @@
+name: mobile_tasks
+publish_to: none
+environment:
+  sdk: ^3.10.0
+
+workspace:
+  - tools/workspace_lints
+  - tools/dev_backend
+  - packages/core
+  - packages/adapter_http_http
+  - packages/adapter_db_sqlcipher
+  - packages/adapter_logging_crashlytics
+  - packages/adapter_analytics_firebase
+  - packages/adapter_sync_workmanager
+  - packages/adapter_prefs_shared_preferences
+  - packages/adapter_connectivity_connectivity_plus
+  - packages/design_system
+  - packages/auth_module
+  - packages/tasks_module
+  - mobile_tasks_app
+
+melos:
+  scripts:
+    analyze:
+      run: dart analyze --fatal-infos
+    # Chapter 40: workspace_lints runs with dart test, because the plugin's
+    # rule tests use test_reflective_loader, which uses dart:mirrors, and
+    # flutter test does not compile dart:mirrors. The other packages stay
+    # with flutter test.
+    test:
+      run: >-
+        dart run melos exec --dir-exists=test --ignore=workspace_lints
+        -- flutter test &&
+        dart run melos exec --scope=workspace_lints -- dart test
+    check-deps:
+      run: dart run tools/workspace_lints/bin/check_dependencies.dart
+dev_dependencies:
+  melos: ^8.9.0

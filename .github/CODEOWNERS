@@ -1,0 +1,7 @@
+# Code owners (chapter 42). The last line that reaches the file wins;
+# that is why the general line comes first and each module has its own,
+# after it. check-deps checks that every feature module has a line of its
+# own. In an organization, each module would point to its team (@org/team).
+*                        @olivgilberto
+/packages/auth_module/   @olivgilberto
+/packages/tasks_module/  @olivgilberto

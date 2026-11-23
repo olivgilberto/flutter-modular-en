@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chapter 30: the modules' databases (files/local_databases, where
+     SqlcipherLocalDatabaseFactory creates them) and secure storage (in
+     shared_prefs) never leave the device. The manifest's
+     android:allowBackup="false" turns off cloud backup; on Android 12 or
+     newer, device-to-device transfer may ignore it, and it is covered here.
+     The AppPreferences preferences live in files/datastore and go along in
+     the transfer. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="local_databases/" />
+        <exclude domain="sharedpref" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="local_databases/" />
+        <exclude domain="sharedpref" path="." />
+    </device-transfer>
+</data-extraction-rules>

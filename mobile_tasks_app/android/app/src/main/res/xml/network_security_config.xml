@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chapter 27: HTTPS only, and only the system's certificate authorities.
+     It is Android's default since API 28 (cleartext) and API 24 (user CAs),
+     written here so that no library changes it without showing up in a
+     pull request. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

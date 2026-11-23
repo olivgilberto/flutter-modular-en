@@ -1,0 +1,10 @@
+# The host's own strings (chapter 37): the app title and the connection
+# notice. The screens' strings live in the modules; the language screen has
+# nothing to translate.
+arb-dir: lib/l10n
+template-arb-file: mobile_tasks_en.arb
+output-localization-file: mobile_tasks_localizations.dart
+output-class: MobileTasksLocalizations
+nullable-getter: false
+required-resource-attributes: true
+format: true

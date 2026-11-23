@@ -1,0 +1,14 @@
+name: adapter_http_http
+description: HTTP adapter with the http package for the ApiClient and ReachabilityProbe ports (chapter 41).
+publish_to: none
+resolution: workspace
+environment:
+  sdk: ^3.10.0
+
+# http comes in through verify.sh's pub add, in the newest compatible version.
+dependencies:
+  core:
+  http: ^1.6.0
+dev_dependencies:
+  lints: ^6.1.0
+  test: ^1.31.1
