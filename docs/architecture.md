@@ -40,6 +40,7 @@ page is left over from a module that was removed.
 |---|---|---|---|---|
 | auth_module | sign-in, registration, session, and sign-out | base | @olivgilberto | [modules/auth_module.md](modules/auth_module.md) |
 | tasks_module | offline-first tasks, sync, and conflicts | session | @olivgilberto | [modules/tasks_module.md](modules/tasks_module.md) |
+| notes_module | chapter 42 draft | session | @olivgilberto | [modules/notes_module.md](modules/notes_module.md) |
 
 ## Core ports
 Catalog in packages/core/lib/core.dart (chapter 17). core has no
