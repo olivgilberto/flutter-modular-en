@@ -1,3 +1,4 @@
+import 'package:get_it/get_it.dart';
 import '../value_objects/task_title.dart';
 
 /// Where a task stands. Archiving is the end: the task leaves the list.
